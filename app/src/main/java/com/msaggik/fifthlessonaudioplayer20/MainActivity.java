@@ -36,7 +36,9 @@ public class MainActivity extends AppCompatActivity  implements Runnable{
         fabPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playSong(); // воспроизведение музыки
+                playSong();
+                // воспроизведение музыки
+                ;
             }
         });
 
@@ -69,10 +71,10 @@ public class MainActivity extends AppCompatActivity  implements Runnable{
                 seekBarHint.setX(seekBar.getX() + Math.round(seekBar.getWidth()*percentTrack*0.92));
 
                 if (progress > 0 && mediaPlayer != null && !mediaPlayer.isPlaying()) { // если mediaPlayer не пустой и mediaPlayer не воспроизводится
-                    clearMediaPlayer(); // остановка и очиска MediaPlayer
+
                     // назначение кнопке картинки play
                     fabPlayPause.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, android.R.drawable.ic_media_play));
-                    MainActivity.this.seekBar.setProgress(0); // установление seekBar значения 0
+                    MainActivity.this.seekBar.setProgress(progress); // установление seekBar значения
                 }
             }
             // метод при начале перетаскивания ползунка по шкале
@@ -94,8 +96,7 @@ public class MainActivity extends AppCompatActivity  implements Runnable{
     public void playSong() {
         try { // обработка исключения на случай отстутствия файла
             if (mediaPlayer != null && mediaPlayer.isPlaying()) { // если mediaPlayer не пустой и mediaPlayer воспроизводится
-                clearMediaPlayer(); // остановка и очиска MediaPlayer
-                seekBar.setProgress(0); // присваивание seekBar значения 0
+                mediaPlayer.pause();
                 wasPlaying = true; // инициализация значения запуска аудио-файла
                 // назначение кнопке картинки play
                 fabPlayPause.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, android.R.drawable.ic_media_play));
@@ -106,6 +107,8 @@ public class MainActivity extends AppCompatActivity  implements Runnable{
                     mediaPlayer = new MediaPlayer(); // то выделяется для него память
                 }
                 // назначение кнопке картинки pause
+
+                mediaPlayer.start();
                 fabPlayPause.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, android.R.drawable.ic_media_pause));
 
                 // альтернативный способ считывания файла с помощью файлового дескриптора
@@ -151,7 +154,7 @@ public class MainActivity extends AppCompatActivity  implements Runnable{
         int total = mediaPlayer.getDuration(); // считывание длины трека
 
         // бесконечный цикл при условии не нулевого mediaPlayer, проигрывания трека и текущей позиции трека меньше длины трека
-        while (mediaPlayer != null && mediaPlayer.isPlaying() && currentPosition < total) {
+        while (mediaPlayer != null && currentPosition < total) {
             try {
 
                 Thread.sleep(1000); // засыпание вспомогательного потока на 1 секунду
